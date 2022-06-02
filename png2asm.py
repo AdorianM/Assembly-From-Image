@@ -7,12 +7,13 @@ def path_to_basename(file_path):
 
 def write_hexels_to_file(fileName, hexels, width, height):
     outputName = fileName + '.inc'
+    variableName = "var" + fileName
     f = open(outputName, "w")
-    f.write(fileName + " DD ")
+    f.write(variableName + " DD ")
 
     for y in range(height):
         if y != 0:
-            f.write("        DD ")
+            f.write(" "*len(variableName) + " DD ")
         for x in range(width - 1):
             f.write(hexels[height*x + y])
             f.write(", ")
