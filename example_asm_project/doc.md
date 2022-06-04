@@ -14,6 +14,6 @@ The details of the implementation can be seen in `example.asm`, but essentially:
 
 ## Results
 
-Compining and running gives the following result:
+Compiling and running gives the following result:
 
 ![image](https://user-images.githubusercontent.com/67052082/172018167-0af98a8b-193c-429c-a2a1-1eb57fcb1be8.png)
