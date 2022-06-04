@@ -3,6 +3,8 @@ from PIL import Image, UnidentifiedImageError
 from sys import exit, argv
 from os import path
 
+TOKEN_LIMIT = 48 # 50 Max Tokens - 2 Tokens for variable name and type
+
 def print_and_quit(message):
     print(message)
     input("Press anything to quit...")
@@ -10,24 +12,34 @@ def print_and_quit(message):
 
 def path_to_basename(file_path):
     return path.splitext(file_path)[0]
+    
+def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, height):
+    file.write(variableName + " DD ")
+    for y in range(height):
+        if y != 0:
+            file.write(" "*len(variableName) + " DD ")
+        for x in range(lowLimit, highLimit):
+            file.write(hexels[height*x + y])
+            file.write(", ")
+        file.write(hexels[height*x + y])
+        file.write("\n")
 
 def write_hexels_to_file(fileName, hexels, width, height):
     outputName = fileName + '.inc'
-    variableName = "var" + fileName
     f = open(outputName, "w")
-    if f:
-        f.write(variableName + " DD ")
-        for y in range(height):
-            if y != 0:
-                f.write(" "*len(variableName) + " DD ")
-            for x in range(width - 1):
-                f.write(hexels[height*x + y])
-                f.write(", ")
-            f.write(hexels[height*x + y])
+
+    if f: 
+        splitCount = height // TOKEN_LIMIT
+        for i in range(splitCount + 1):
+            variableName = "var" + fileName + "_" + str(i)
+            lowLimit = i * TOKEN_LIMIT
+            highLimit = min((i + 1) * TOKEN_LIMIT, width)
+
+            write_variable_to_file(f, variableName, hexels, lowLimit, highLimit, height)
             f.write("\n")
+        f.close()
     else:
         print_and_quit("Error writing to file")
-    
 
 def get_pixels_to_hex(pixels, width, height):
     hexels = []
@@ -58,8 +70,8 @@ def img2bytes(imgPath, imgName):
         print_and_quit("The specified file path is incorrect")
     except UnidentifiedImageError:
         print_and_quit("The provided file is either not an image or corrupt")
-    except Exception as e:
-        print_and_quit("An error occurred: " + str(e))
+    # except Exception as e:
+    #     print_and_quit("An error occurred: " + str(e))
 
 def main():
     if len(argv) > 1:
