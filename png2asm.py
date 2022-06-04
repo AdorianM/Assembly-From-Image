@@ -18,10 +18,10 @@ def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, heig
     for y in range(height):
         if y != 0:
             file.write(" "*len(variableName) + " DD ")
-        for x in range(lowLimit, highLimit):
+        for x in range(lowLimit, highLimit - 1):
             file.write(hexels[height*x + y])
             file.write(", ")
-        file.write(hexels[height*x + y])
+        file.write(hexels[height*(highLimit - 1) + y])
         file.write("\n")
 
 def write_hexels_to_file(fileName, hexels, width, height):
