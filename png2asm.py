@@ -14,6 +14,7 @@ def path_to_basename(file_path):
     return path.splitext(file_path)[0]
     
 def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, height):
+    file.write(variableName + " DD ")
     for y in range(height):
         if y != 0:
             file.write(" "*len(variableName) + " DD ")
@@ -29,13 +30,11 @@ def write_hexels_to_file(fileName, hexels, width, height):
 
     if f: 
         splitCount = height // TOKEN_LIMIT
-        print(splitCount)
         for i in range(splitCount + 1):
             variableName = "var" + fileName + "_" + str(i)
-            f.write(variableName + " DD ")
-
             lowLimit = i * TOKEN_LIMIT
             highLimit = min((i + 1) * TOKEN_LIMIT, width)
+
             write_variable_to_file(f, variableName, hexels, lowLimit, highLimit, height)
             f.write("\n")
         f.close()
