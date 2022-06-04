@@ -29,7 +29,7 @@ def write_hexels_to_file(fileName, hexels, width, height):
     f = open(outputName, "w")
 
     if f: 
-        splitCount = height // TOKEN_LIMIT
+        splitCount = width // (TOKEN_LIMIT + 1)
         for i in range(splitCount + 1):
             variableName = "var" + fileName + "_" + str(i)
             lowLimit = i * TOKEN_LIMIT
@@ -70,8 +70,8 @@ def img2bytes(imgPath, imgName):
         print_and_quit("The specified file path is incorrect")
     except UnidentifiedImageError:
         print_and_quit("The provided file is either not an image or corrupt")
-    # except Exception as e:
-    #     print_and_quit("An error occurred: " + str(e))
+    except Exception as e:
+        print_and_quit("An error occurred: " + str(e))
 
 def main():
     if len(argv) > 1:
