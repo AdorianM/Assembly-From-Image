@@ -11,7 +11,7 @@ def print_and_quit(message):
     exit()
 
 def path_to_basename(file_path):
-    return path.splitext(file_path)[0]
+    return path.basename(file_path)[0]
     
 def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, height):
     file.write(variableName + " DD ")
