@@ -1,8 +1,13 @@
 import tkinter as tk
+from tkinter import filedialog
+from tkinter import messagebox
 from PIL import Image, ImageTk
+
+from os import path
 
 default_padx = 10
 default_pady = 5
+baseColor = '#EFEFEA'
 
 class ImageLabel(tk.Label):
     def __init__(self, parent, imgPath, *args, **kwargs):
@@ -16,31 +21,63 @@ class ImageLabel(tk.Label):
 class LabeledText(tk.Frame):
     def __init__(self, parent, label, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
+
+        # Component definitions
         self.label = tk.Label(self, text=label)
         self.text = tk.Text(self,  height=1, width=5)
 
+        # Component placement
         self.label.pack(side="left")
         self.text.pack(side="left", fill='x', expand=True, padx=default_padx)
 
-class SettingsFrame(tk.LabelFrame):
+class FileBrowser(tk.Frame):
+    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="", *args, **kwargs):
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+
+        self.filePathVar = tk.StringVar()
+        self.filePathVar.set(defaultPath)
+        self.command = self.browseDir if isDir else self.browseFile
+
+        # Component Definitions
+        self.fileBrowser = tk.Button(self, text=buttonMessage, command=self.command, width=20)
+        self.filePath = tk.Label(self, textvariable=self.filePathVar, border=1, relief="sunken")
+
+        # Component Placement
+        self.fileBrowser.pack(side=tk.TOP, fill="none", expand=True)
+        self.filePath.pack(side=tk.TOP, fill="x", pady=default_pady)
+    
+    def browseFile(self):
+        file = filedialog.askopenfilename(initialdir = "/", title = "Select a File", filetypes = (("Images","*.png*"),
+                                                ("all files","*.*")))
+        self.filePathVar.set(file)
+
+    def browseDir(self):
+        dir = filedialog.askdirectory(initialdir = "/", title = "Select a Directory")
+        self.filePathVar.set(dir)
+
+class SettingsFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
-        tk.LabelFrame.__init__(self, parent, *args, **kwargs)
+        tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        self.outputSettingsFrame = tk.LabelFrame(self, text="Output Settings", bg="#EFEFEA")
-        self.otherSettingsFrame = tk.LabelFrame(self, text="Other Settings", bg="#EFEFEA")
+        self.inputPathVar = tk.StringVar()
+        self.outputPathVar = tk.StringVar()
 
-        self.labeledText1 = LabeledText(self.outputSettingsFrame, "Output File Name:")
-        self.labeledText2 = LabeledText(self.outputSettingsFrame, "Output File Name:")
-        self.labeledText3 = LabeledText(self.otherSettingsFrame, "Output File Name:")
-        self.labeledText4 = LabeledText(self.otherSettingsFrame, "Output File Name:")
+        # Component definitions
+        self.fileManagementFrame = tk.LabelFrame(self, text="Input\\Output", bg=baseColor)
+        self.otherSettingsFrame = tk.LabelFrame(self, text="Others", bg=baseColor)
 
-        self.outputSettingsFrame.pack(side=tk.LEFT, fill="both", expand=True, padx=default_padx, pady=default_pady)
-        self.otherSettingsFrame.pack(side=tk.RIGHT, fill="both", expand=True, padx=default_padx, pady=default_pady)
+        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, bg=baseColor)
+        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, defaultPath=path.dirname(path.realpath(__file__)), bg=baseColor)
 
-        self.labeledText1.pack(side=tk.TOP, fill="both", expand=True)
-        self.labeledText2.pack(side=tk.TOP, fill="both", expand=True)
-        self.labeledText3.pack(side=tk.TOP, fill="both", expand=True)
-        self.labeledText4.pack(side=tk.TOP, fill="both", expand=True)
+        self.variableBaseName = LabeledText(self.otherSettingsFrame, "Variable Base Name:")
+
+        # Component placement
+        self.fileManagementFrame.pack(side=tk.TOP, fill="x", expand=False, padx=default_padx, pady=default_pady)
+        self.otherSettingsFrame.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+
+        self.inputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.variableBaseName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
 class MainApplication(tk.Frame):
     def __init__(self, parent):
@@ -50,20 +87,27 @@ class MainApplication(tk.Frame):
 
     def initialize(self):
         self.parent.title("Png to Asm Converter")
-        self.parent.geometry("480x260")
+        self.parent.geometry("280x350")
+        self.parent.resizable(False, False)
         self.parent.iconbitmap("assets/chef.ico")
+        self.parent.eval('tk::PlaceWindow . center')
 
-        baseFrame = tk.Frame(self.parent, borderwidth=14, bg="#EFEFEA")
+        # Component definitions
+        baseFrame = tk.Frame(self.parent, bg=baseColor)
 
-        self.logoLabel = ImageLabel(baseFrame, "assets/chef.ico")
-        self.settingFrame = SettingsFrame(baseFrame, text="Settings Panel", bg="#EFEFEA")
-        self.convertButton = tk.Button(baseFrame, text="Convert", command=())
+        self.logoLabel = ImageLabel(baseFrame, imgPath="assets/chef.ico", text="Settings", compound=tk.TOP, font="Arial 14 bold", bg=baseColor)
+        self.settingFrame = SettingsFrame(baseFrame)
+        self.convertButton = tk.Button(baseFrame, text="Convert", command=self.convert, padx=20)
 
+        # Component placement
         baseFrame.pack(fill="both", expand=True)
 
         self.logoLabel.pack(side=tk.TOP)
-        self.settingFrame.pack(side=tk.TOP, fill="both", expand=True, padx=default_padx, pady=default_pady)
-        self.convertButton.pack(side=tk.BOTTOM, padx=default_padx, pady=default_pady)
+        self.settingFrame.pack(side=tk.TOP, fill="x", expand=False, padx=default_padx, pady=default_pady)
+        self.convertButton.pack(side=tk.TOP, padx=default_padx, pady=default_pady)
+
+    def convert(self):
+        messagebox.showinfo("Conversion", "Conversion complete!")
 
 def main():
     root = tk.Tk()
