@@ -31,7 +31,7 @@ class LabeledText(tk.Frame):
         self.text.pack(side="left", fill='x', expand=True, padx=default_padx)
 
 class FileBrowser(tk.Frame):
-    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="", *args, **kwargs):
+    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="/", *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
         self.filePathVar = tk.StringVar()
@@ -47,7 +47,8 @@ class FileBrowser(tk.Frame):
         self.filePath.pack(side=tk.TOP, fill="x", pady=default_pady)
     
     def browseFile(self):
-        file = filedialog.askopenfilename(initialdir = "/", title = "Select a File", filetypes = (("Images","*.png*"),
+        currentDir = path.dirname(path.realpath(__file__))
+        file = filedialog.askopenfilename(initialdir = currentDir, title = "Select a File", filetypes = (("Images","*.png*"),
                                                 ("all files","*.*")))
         self.filePathVar.set(file)
 
@@ -59,15 +60,14 @@ class SettingsFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        self.inputPathVar = tk.StringVar()
-        self.outputPathVar = tk.StringVar()
+        currentDir = path.dirname(path.realpath(__file__))
 
         # Component definitions
         self.fileManagementFrame = tk.LabelFrame(self, text="Input\\Output", bg=baseColor)
         self.otherSettingsFrame = tk.LabelFrame(self, text="Others", bg=baseColor)
 
-        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, bg=baseColor)
-        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, defaultPath=path.dirname(path.realpath(__file__)), bg=baseColor)
+        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, defaultPath="/", bg=baseColor)
+        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, defaultPath=currentDir, bg=baseColor)
 
         self.variableBaseName = LabeledText(self.otherSettingsFrame, "Variable Base Name:")
 
@@ -79,7 +79,7 @@ class SettingsFrame(tk.Frame):
         self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
         self.variableBaseName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
-class MainApplication(tk.Frame):
+class View(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -97,7 +97,7 @@ class MainApplication(tk.Frame):
 
         self.logoLabel = ImageLabel(baseFrame, imgPath="assets/chef.ico", text="Settings", compound=tk.TOP, font="Arial 14 bold", bg=baseColor)
         self.settingFrame = SettingsFrame(baseFrame)
-        self.convertButton = tk.Button(baseFrame, text="Convert", command=self.convert, padx=20)
+        self.convertButton = tk.Button(baseFrame, text="Convert", command=self.convertButtonClicked, padx=20)
 
         # Component placement
         baseFrame.pack(fill="both", expand=True)
@@ -106,12 +106,26 @@ class MainApplication(tk.Frame):
         self.settingFrame.pack(side=tk.TOP, fill="x", expand=False, padx=default_padx, pady=default_pady)
         self.convertButton.pack(side=tk.TOP, padx=default_padx, pady=default_pady)
 
-    def convert(self):
-        messagebox.showinfo("Conversion", "Conversion complete!")
+        self.controller = None
+    
+    def setController(self, controller):
+        self.controller = controller
+    
+    def convertButtonClicked(self):
+        if self.controller:
+            inputPath = self.settingFrame.inputBrowser.filePathVar.get()
+            outputPath = self.settingFrame.outputBrowser.filePathVar.get()
+            self.controller.convert(inputPath, outputPath)
+    
+    def showError(self, message):
+        messagebox.showerror("Error", message)
+
+    def showSuccess(self, message):
+        messagebox.showinfo("Conversion", message)
 
 def main():
     root = tk.Tk()
-    MainApplication(root)
+    View(root)
     root.mainloop()
 
 if __name__ == "__main__":
