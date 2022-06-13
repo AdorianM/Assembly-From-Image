@@ -24,7 +24,7 @@ def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, heig
         file.write(hexels[height*(highLimit - 1) + y])
         file.write("\n")
 
-def write_hexels_to_file(fileName, outputPath, hexels, width, height):
+def write_hexels_to_file(fileName, outputPath, variableName, hexels, width, height):
     print("Writing " + fileName + " to " + outputPath)
     outputName = path.join(outputPath, fileName + '.inc')
     f = open(outputName, "w")
@@ -32,7 +32,7 @@ def write_hexels_to_file(fileName, outputPath, hexels, width, height):
     if f: 
         splitCount = width // (TOKEN_LIMIT + 1)
         for i in range(splitCount + 1):
-            variableName = "var" + fileName + "_" + str(i)
+            variableName = variableName + "_" + str(i)
             lowLimit = i * TOKEN_LIMIT
             highLimit = min((i + 1) * TOKEN_LIMIT, width)
 
@@ -40,7 +40,7 @@ def write_hexels_to_file(fileName, outputPath, hexels, width, height):
             f.write("\n")
         f.close()
     else:
-        print_and_quit("Error writing to file")
+        raise Exception("Unable to open file " + outputName)
 
 def get_pixels_to_hex(pixels, width, height):
     hexels = []
@@ -59,14 +59,14 @@ def get_pixels_to_hex(pixels, width, height):
             hexels.append(hexel)
     return hexels
 
-def img2bytes(imgPath, imgName, outputPath):
+def img2bytes(imgPath, imgName, outputPath, variableName):
     try:
         im = Image.open(imgPath)
         pixels = im.load()
         x = im.size[0]
         y = im.size[1]
         hexels = get_pixels_to_hex(pixels, x, y)
-        write_hexels_to_file(imgName, outputPath, hexels, x, y)
+        write_hexels_to_file(imgName, outputPath, variableName, hexels, x, y)
     except FileNotFoundError as fnfe:
         raise Exception("The specified file path is incorrect and could not be found") from fnfe
     except UnidentifiedImageError as uie:
@@ -80,6 +80,7 @@ class Model:
     def __init__(self):
         self.inputPath = ""
         self.outputPath = "/"
+        self.variableName = "var"
     
     def setInputPath(self, inputPath):
         self.inputPath = inputPath
@@ -87,11 +88,12 @@ class Model:
     def setOutputPath(self, outputPath):
         self.outputPath = outputPath
 
+    def setVariableName(self, variableName):
+        self.variableName = variableName
+
     def convert(self):
         try:
-            print(self.inputPath)
-            print("Converting " + path_to_basename(self.inputPath) + " to " + self.outputPath)
-            img2bytes(self.inputPath, path_to_basename(self.inputPath), self.outputPath)
+            img2bytes(self.inputPath, path_to_basename(self.inputPath), self.outputPath, self.variableName)
 
             return True
         except Exception as e:

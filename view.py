@@ -24,14 +24,14 @@ class LabeledText(tk.Frame):
 
         # Component definitions
         self.label = tk.Label(self, text=label)
-        self.text = tk.Text(self,  height=1, width=5)
+        self.text = tk.Entry(self)
 
         # Component placement
         self.label.pack(side="left")
         self.text.pack(side="left", fill='x', expand=True, padx=default_padx)
 
 class FileBrowser(tk.Frame):
-    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="/", *args, **kwargs):
+    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="", *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
         self.filePathVar = tk.StringVar()
@@ -66,10 +66,10 @@ class SettingsFrame(tk.Frame):
         self.fileManagementFrame = tk.LabelFrame(self, text="Input\\Output", bg=baseColor)
         self.otherSettingsFrame = tk.LabelFrame(self, text="Others", bg=baseColor)
 
-        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, defaultPath="/", bg=baseColor)
+        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, bg=baseColor)
         self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, defaultPath=currentDir, bg=baseColor)
 
-        self.variableBaseName = LabeledText(self.otherSettingsFrame, "Variable Base Name:")
+        self.variableName = LabeledText(self.otherSettingsFrame, "Variable Name:")
 
         # Component placement
         self.fileManagementFrame.pack(side=tk.TOP, fill="x", expand=False, padx=default_padx, pady=default_pady)
@@ -77,7 +77,7 @@ class SettingsFrame(tk.Frame):
 
         self.inputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
         self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
-        self.variableBaseName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.variableName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
 class View(tk.Frame):
     def __init__(self, parent):
@@ -115,18 +115,11 @@ class View(tk.Frame):
         if self.controller:
             inputPath = self.settingFrame.inputBrowser.filePathVar.get()
             outputPath = self.settingFrame.outputBrowser.filePathVar.get()
-            self.controller.convert(inputPath, outputPath)
+            variableName = self.settingFrame.variableName.text.get()
+            self.controller.convert(inputPath, outputPath, variableName)
     
     def showError(self, message):
         messagebox.showerror("Error", message)
 
     def showSuccess(self, message):
         messagebox.showinfo("Conversion", message)
-
-def main():
-    root = tk.Tk()
-    View(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
