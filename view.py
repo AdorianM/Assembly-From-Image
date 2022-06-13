@@ -86,7 +86,7 @@ class View(tk.Frame):
         self.initialize()
 
     def initialize(self):
-        self.parent.title("Png to Asm Converter")
+        self.parent.title("Asm Converter")
         self.parent.geometry("280x350")
         self.parent.resizable(False, False)
         self.parent.iconbitmap("assets/chef.ico")
