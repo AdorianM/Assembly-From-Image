@@ -17,7 +17,7 @@ def main():
     if len(argv) > 1:
         imgPath = argv[1]
         imgName = utils.path_to_basename(imgPath)
-        currentDir = path.dirname(path.realpath(__file__))
+        currentDir = path.dirname(imgPath)
 
         utils.img2bytes(imgPath, imgName, currentDir)
         utils.print_and_quit("File " + imgName + " successfully created")
