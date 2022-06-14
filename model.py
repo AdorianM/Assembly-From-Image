@@ -11,7 +11,7 @@ def print_and_quit(message):
     exit()
 
 def path_to_basename(file_path):
-    return path.basename(file_path)[0]
+    return path.splitext(path.basename(file_path))[0]
     
 def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, height):
     file.write(variableName + " DD ")
@@ -24,14 +24,15 @@ def write_variable_to_file(file, variableName, hexels, lowLimit, highLimit, heig
         file.write(hexels[height*(highLimit - 1) + y])
         file.write("\n")
 
-def write_hexels_to_file(fileName, hexels, width, height):
-    outputName = fileName + '.inc'
+def write_hexels_to_file(fileName, outputPath, variableName, hexels, width, height):
+    print("Writing " + fileName + " to " + outputPath)
+    outputName = path.join(outputPath, fileName + '.inc')
     f = open(outputName, "w")
 
     if f: 
         splitCount = width // (TOKEN_LIMIT + 1)
         for i in range(splitCount + 1):
-            variableName = "var" + fileName + "_" + str(i)
+            variableName = variableName + "_" + str(i)
             lowLimit = i * TOKEN_LIMIT
             highLimit = min((i + 1) * TOKEN_LIMIT, width)
 
@@ -39,7 +40,7 @@ def write_hexels_to_file(fileName, hexels, width, height):
             f.write("\n")
         f.close()
     else:
-        print_and_quit("Error writing to file")
+        raise Exception("Unable to open file " + outputName)
 
 def get_pixels_to_hex(pixels, width, height):
     hexels = []
@@ -58,27 +59,53 @@ def get_pixels_to_hex(pixels, width, height):
             hexels.append(hexel)
     return hexels
 
-def img2bytes(imgPath, imgName):
+def img2bytes(imgPath, imgName, outputPath, variableName):
     try:
         im = Image.open(imgPath)
         pixels = im.load()
         x = im.size[0]
         y = im.size[1]
         hexels = get_pixels_to_hex(pixels, x, y)
-        write_hexels_to_file(imgName, hexels, x, y)
-    except FileNotFoundError:
-        print_and_quit("The specified file path is incorrect")
-    except UnidentifiedImageError:
-        print_and_quit("The provided file is either not an image or corrupt")
+        write_hexels_to_file(imgName, outputPath, variableName, hexels, x, y)
+    except FileNotFoundError as fnfe:
+        raise Exception("The specified file path is incorrect and could not be found") from fnfe
+    except UnidentifiedImageError as uie:
+        raise Exception("The provided file is either not an image or corrupt") from uie
+    except AttributeError as ae:
+        raise Exception("The provided path is not a file") from ae
     except Exception as e:
-        print_and_quit("An error occurred: " + str(e))
+        raise Exception(str(e)) from e
+
+class Model:
+    def __init__(self):
+        self.inputPath = ""
+        self.outputPath = "/"
+        self.variableName = "var"
+    
+    def setInputPath(self, inputPath):
+        self.inputPath = inputPath
+
+    def setOutputPath(self, outputPath):
+        self.outputPath = outputPath
+
+    def setVariableName(self, variableName):
+        self.variableName = variableName
+
+    def convert(self):
+        try:
+            img2bytes(self.inputPath, path_to_basename(self.inputPath), self.outputPath, self.variableName)
+
+            return True
+        except Exception as e:
+            return str(e)
 
 def main():
     if len(argv) > 1:
-        imgPath = argv[1]
         imgName = path_to_basename(imgPath)
+        imgPath = argv[1]
+        currentDir = path.dirname(path.realpath(__file__))
 
-        img2bytes(imgPath, imgName)
+        img2bytes(imgPath, imgName, currentDir)
 
         print_and_quit("File " + imgName + " successfully created")
 
