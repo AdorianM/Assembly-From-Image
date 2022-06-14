@@ -1,5 +1,7 @@
 import tkinter as tk
-import model, view, controller
+from png2asm import model, view, controller, utils
+from sys import argv
+from os import path
 
 class App(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -11,6 +13,17 @@ class App(tk.Tk):
 
         self.view.setController(self.controller)
 
+def main():
+    if len(argv) > 1:
+        imgPath = argv[1]
+        imgName = utils.path_to_basename(imgPath)
+        currentDir = path.dirname(path.realpath(__file__))
+
+        utils.img2bytes(imgPath, imgName, currentDir)
+        utils.print_and_quit("File " + imgName + " successfully created")
+    else:
+        app = App()
+        app.mainloop()
+
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    main()

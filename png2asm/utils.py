@@ -1,7 +1,7 @@
+from os import path
 from msilib.schema import Error
 from PIL import Image, UnidentifiedImageError
 from sys import exit, argv
-from os import path
 
 TOKEN_LIMIT = 48 # 50 Max Tokens - 2 Tokens for variable name and type
 
@@ -53,13 +53,13 @@ def get_pixels_to_hex(pixels, width, height):
                 for color in pixel[:3]:
                     hexVal = "{:02x}".format(color)
                     hexel += hexVal
-            except IndexError:
-                print_and_quit("Error: Color index out of bounds. Image is not RGB")
+            except IndexError as ie:
+                raise Exception("Error: Color index out of bounds. Image is not RGB") from ie
             hexel += 'h'
             hexels.append(hexel)
     return hexels
 
-def img2bytes(imgPath, imgName, outputPath, variableName):
+def img2bytes(imgPath, imgName, outputPath, variableName="var"):
     try:
         im = Image.open(imgPath)
         pixels = im.load()
@@ -75,42 +75,3 @@ def img2bytes(imgPath, imgName, outputPath, variableName):
         raise Exception("The provided path is not a file") from ae
     except Exception as e:
         raise Exception(str(e)) from e
-
-class Model:
-    def __init__(self):
-        self.inputPath = ""
-        self.outputPath = "/"
-        self.variableName = "var"
-    
-    def setInputPath(self, inputPath):
-        self.inputPath = inputPath
-
-    def setOutputPath(self, outputPath):
-        self.outputPath = outputPath
-
-    def setVariableName(self, variableName):
-        self.variableName = variableName
-
-    def convert(self):
-        try:
-            img2bytes(self.inputPath, path_to_basename(self.inputPath), self.outputPath, self.variableName)
-
-            return True
-        except Exception as e:
-            return str(e)
-
-def main():
-    if len(argv) > 1:
-        imgName = path_to_basename(imgPath)
-        imgPath = argv[1]
-        currentDir = path.dirname(path.realpath(__file__))
-
-        img2bytes(imgPath, imgName, currentDir)
-
-        print_and_quit("File " + imgName + " successfully created")
-
-    print_and_quit("Drag & drop a file on the executable to produce the assembly data output")
-    
-
-if __name__ == "__main__":
-    main()
