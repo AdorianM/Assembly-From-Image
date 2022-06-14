@@ -3,11 +3,19 @@ from tkinter import filedialog
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
-from os import path
+from os import path, environ
+import sys
 
 default_padx = 10
 default_pady = 5
 baseColor = '#EFEFEA'
+
+def resource_path(relative):
+    base_path = getattr(
+        sys,
+        '_MEIPASS',
+        path.dirname(path.abspath(__file__)))
+    return path.join(base_path, relative)
 
 class ImageLabel(tk.Label):
     def __init__(self, parent, imgPath, *args, **kwargs):
@@ -60,14 +68,14 @@ class SettingsFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        currentDir = path.dirname(path.realpath(__file__))
+        currentDir = path.dirname(__file__)
 
         # Component definitions
         self.fileManagementFrame = tk.LabelFrame(self, text="Input\\Output", bg=baseColor)
         self.otherSettingsFrame = tk.LabelFrame(self, text="Others", bg=baseColor)
 
         self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, bg=baseColor)
-        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, defaultPath=currentDir, bg=baseColor)
+        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, bg=baseColor)
 
         self.variableName = LabeledText(self.otherSettingsFrame, "Variable Name:")
 
@@ -89,13 +97,14 @@ class View(tk.Frame):
         self.parent.title("Asm Converter")
         self.parent.geometry("280x350")
         self.parent.resizable(False, False)
-        self.parent.iconbitmap("assets/chef.ico")
+        imagePath = resource_path("assets\\chef.ico")
+        self.parent.iconbitmap(imagePath)
         self.parent.eval('tk::PlaceWindow . center')
 
         # Component definitions
         baseFrame = tk.Frame(self.parent, bg=baseColor)
 
-        self.logoLabel = ImageLabel(baseFrame, imgPath="assets/chef.ico", text="Settings", compound=tk.TOP, font="Arial 14 bold", bg=baseColor)
+        self.logoLabel = ImageLabel(baseFrame, imgPath=resource_path("assets\\chef.ico"), text="Settings", compound=tk.TOP, font="Arial 14 bold", bg=baseColor)
         self.settingFrame = SettingsFrame(baseFrame)
         self.convertButton = tk.Button(baseFrame, text="Convert", command=self.convertButtonClicked, padx=20)
 
