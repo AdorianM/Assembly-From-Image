@@ -62,6 +62,7 @@ def get_pixels_to_hex(pixels, width, height):
 def img2bytes(imgPath, imgName, outputPath, variableName="var"):
     try:
         im = Image.open(imgPath)
+        im = im.convert('RGB')
         pixels = im.load()
         x = im.size[0]
         y = im.size[1]
