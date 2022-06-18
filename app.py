@@ -20,7 +20,6 @@ def main():
         currentDir = path.dirname(imgPath)
 
         utils.img2bytes(imgPath, imgName, currentDir)
-        utils.print_and_quit("File " + imgName + " successfully created")
     else:
         app = App()
         app.mainloop()

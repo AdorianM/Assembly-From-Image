@@ -32,11 +32,11 @@ def write_hexels_to_file(fileName, outputPath, variableName, hexels, width, heig
     if f: 
         splitCount = width // (TOKEN_LIMIT + 1)
         for i in range(splitCount + 1):
-            variableName = variableName + "_" + str(i)
+            currentVariableName = variableName + "_" + str(i)
             lowLimit = i * TOKEN_LIMIT
             highLimit = min((i + 1) * TOKEN_LIMIT, width)
 
-            write_variable_to_file(f, variableName, hexels, lowLimit, highLimit, height)
+            write_variable_to_file(f, currentVariableName, hexels, lowLimit, highLimit, height)
             f.write("\n")
         f.close()
     else:
