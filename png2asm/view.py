@@ -88,11 +88,13 @@ class SettingsFrame(tk.Frame):
         self.otherSettingsFrame.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
         self.inputFrame.pack(side=tk.TOP, fill="x", expand=False, padx=0)
+        self.horizontalSeparator.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+
         self.inputBrowser.pack(side=tk.LEFT, fill="x", expand=True, padx=default_padx, pady=default_pady)
         self.orLabel.pack(side=tk.LEFT, fill="x", padx=0, pady=0)
-        self.horizontalSeparator.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
         self.inputDirBrowser.pack(side=tk.LEFT, fill="x", expand=True, padx=default_padx, pady=default_pady)
-        self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        
         self.variableName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
 class View(tk.Frame):
