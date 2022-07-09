@@ -132,7 +132,9 @@ class View(tk.Frame):
     
     def convertButtonClicked(self):
         if self.controller:
-            inputPath = self.settingFrame.inputBrowser.filePathVar.get()
+            inputPath = self.settingFrame.inputDirBrowser.filePathVar.get() if \
+                        self.settingFrame.inputDirBrowser.filePathVar.get() != "" else \
+                        self.settingFrame.inputBrowser.filePathVar.get()
             outputPath = self.settingFrame.outputBrowser.filePathVar.get()
             variableName = self.settingFrame.variableName.text.get()
             self.controller.convert(inputPath, outputPath, variableName)
