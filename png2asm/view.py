@@ -40,7 +40,7 @@ class LabeledText(tk.Frame):
         self.text.pack(side="left", fill='x', expand=True, padx=default_padx)
 
 class FileBrowser(tk.Frame):
-    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="", inputWidth=20, *args, **kwargs):
+    def __init__(self, parent, buttonMessage="Pick a file", isDir=True, defaultPath="", inputWidth=20, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
         self.filePathVar = tk.StringVar()
@@ -57,12 +57,12 @@ class FileBrowser(tk.Frame):
     
     def browseFile(self):
         currentDir = path.dirname(path.realpath(__file__))
-        file = filedialog.askopenfilename(initialdir = currentDir, title = "Select a File", filetypes = (("Images","*.png*"),
+        file = filedialog.askopenfilename(initialdir = currentDir, title = "Pick a File", filetypes = (("Images","*.png*"),
                                                 ("all files","*.*")))
         self.filePathVar.set(file)
 
     def browseDir(self):
-        dir = filedialog.askdirectory(initialdir = "/", title = "Select a Directory")
+        dir = filedialog.askdirectory(initialdir = "/", title = "Pick a Directory")
         self.filePathVar.set(dir)
 
 class SettingsFrame(tk.Frame):
@@ -75,7 +75,7 @@ class SettingsFrame(tk.Frame):
 
         self.inputFrame = tk.Frame(self.fileManagementFrame, bg=baseColor)
         self.horizontalSeparator = Separator(self.fileManagementFrame, orient="horizontal")
-        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, bg=baseColor, inputWidth=20)
+        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Pick Output Dir", isDir=True, bg=baseColor, inputWidth=20)
 
         self.inputBrowser = FileBrowser(self.inputFrame, "Pick Input File", isDir=False, bg=baseColor, inputWidth=14)
         self.orLabel = tk.Label(self.inputFrame, text="OR", bg=baseColor)
