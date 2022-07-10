@@ -7,8 +7,8 @@ class Controller:
         self.view = view
 
     def convert(self, inputPath, outputPath, variableName):
-        if path.isdir(inputPath) or inputPath == "":
-            self.view.showError("Please select an input file.")
+        if inputPath == "":
+            self.view.showError("Please select an input file or directory.")
             return
         
         if variableName != "" and not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", variableName):

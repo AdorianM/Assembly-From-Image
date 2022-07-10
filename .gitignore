@@ -130,3 +130,9 @@ dmypy.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+
+# Assets
+test_images/
+
+# Output
+output/

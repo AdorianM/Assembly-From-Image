@@ -1,4 +1,6 @@
 from png2asm import utils
+from os import path
+from os import listdir
 
 class Model:
     def __init__(self):
@@ -17,6 +19,11 @@ class Model:
 
     def convert(self):
         try:
+            if path.isdir(self.inputPath):
+                files = [path.join(self.inputPath, f) for f in listdir(self.inputPath) if path.isfile(path.join(self.inputPath, f))]
+                for file in files:
+                    utils.img2bytes(file, utils.path_to_basename(file), self.outputPath, self.variableName)
+                return True
             utils.img2bytes(self.inputPath, utils.path_to_basename(self.inputPath), self.outputPath, self.variableName)
 
             return True

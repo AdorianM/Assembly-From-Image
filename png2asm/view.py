@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
+from tkinter.ttk import Separator
 from PIL import Image, ImageTk
 
 from os import path, environ
@@ -39,7 +40,7 @@ class LabeledText(tk.Frame):
         self.text.pack(side="left", fill='x', expand=True, padx=default_padx)
 
 class FileBrowser(tk.Frame):
-    def __init__(self, parent, buttonMessage="Select a file", isDir=True, defaultPath="", *args, **kwargs):
+    def __init__(self, parent, buttonMessage="Pick a file", isDir=True, defaultPath="", inputWidth=20, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
         self.filePathVar = tk.StringVar()
@@ -47,44 +48,53 @@ class FileBrowser(tk.Frame):
         self.command = self.browseDir if isDir else self.browseFile
 
         # Component Definitions
-        self.fileBrowser = tk.Button(self, text=buttonMessage, command=self.command, width=20)
-        self.filePath = tk.Label(self, textvariable=self.filePathVar, border=1, relief="sunken")
+        self.fileBrowser = tk.Button(self, text=buttonMessage, command=self.command, width=inputWidth)
+        self.filePath = tk.Label(self, textvariable=self.filePathVar, border=1, relief="sunken", width=inputWidth+1) # +1 for the border
 
         # Component Placement
         self.fileBrowser.pack(side=tk.TOP, fill="none", expand=True)
-        self.filePath.pack(side=tk.TOP, fill="x", pady=default_pady)
+        self.filePath.pack(side=tk.TOP, fill="none", pady=default_pady)
     
     def browseFile(self):
         currentDir = path.dirname(path.realpath(__file__))
-        file = filedialog.askopenfilename(initialdir = currentDir, title = "Select a File", filetypes = (("Images","*.png*"),
+        file = filedialog.askopenfilename(initialdir = currentDir, title = "Pick a File", filetypes = (("Images","*.png*"),
                                                 ("all files","*.*")))
         self.filePathVar.set(file)
 
     def browseDir(self):
-        dir = filedialog.askdirectory(initialdir = "/", title = "Select a Directory")
+        dir = filedialog.askdirectory(initialdir = "/", title = "Pick a Directory")
         self.filePathVar.set(dir)
 
 class SettingsFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        currentDir = path.dirname(__file__)
-
         # Component definitions
         self.fileManagementFrame = tk.LabelFrame(self, text="Input\\Output", bg=baseColor)
         self.otherSettingsFrame = tk.LabelFrame(self, text="Others", bg=baseColor)
 
-        self.inputBrowser = FileBrowser(self.fileManagementFrame, "Select Input File", isDir=False, bg=baseColor)
-        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Select Output Directory", isDir=True, bg=baseColor)
+        self.inputFrame = tk.Frame(self.fileManagementFrame, bg=baseColor)
+        self.horizontalSeparator = Separator(self.fileManagementFrame, orient="horizontal")
+        self.outputBrowser = FileBrowser(self.fileManagementFrame, "Pick Output Dir", isDir=True, bg=baseColor, inputWidth=20)
 
+        self.inputBrowser = FileBrowser(self.inputFrame, "Pick Input File", isDir=False, bg=baseColor, inputWidth=14)
+        self.orLabel = tk.Label(self.inputFrame, text="OR", bg=baseColor)
+        self.inputDirBrowser = FileBrowser(self.inputFrame, "Pick Input Dir", isDir=True, bg=baseColor, inputWidth=14)
+        
         self.variableName = LabeledText(self.otherSettingsFrame, "Variable Name:")
 
         # Component placement
         self.fileManagementFrame.pack(side=tk.TOP, fill="x", expand=False, padx=default_padx, pady=default_pady)
         self.otherSettingsFrame.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
-        self.inputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.inputFrame.pack(side=tk.TOP, fill="x", expand=False, padx=0)
+        self.horizontalSeparator.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
         self.outputBrowser.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
+
+        self.inputBrowser.pack(side=tk.LEFT, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        self.orLabel.pack(side=tk.LEFT, fill="x", padx=0, pady=0)
+        self.inputDirBrowser.pack(side=tk.LEFT, fill="x", expand=True, padx=default_padx, pady=default_pady)
+        
         self.variableName.pack(side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady)
 
 class View(tk.Frame):
@@ -95,7 +105,7 @@ class View(tk.Frame):
 
     def initialize(self):
         self.parent.title("Asm Converter")
-        self.parent.geometry("280x350")
+        self.parent.geometry("330x360")
         self.parent.resizable(False, False)
         imagePath = resource_path("assets\\chef.ico")
         self.parent.iconbitmap(imagePath)
@@ -122,7 +132,9 @@ class View(tk.Frame):
     
     def convertButtonClicked(self):
         if self.controller:
-            inputPath = self.settingFrame.inputBrowser.filePathVar.get()
+            inputPath = self.settingFrame.inputDirBrowser.filePathVar.get() if \
+                        self.settingFrame.inputDirBrowser.filePathVar.get() != "" else \
+                        self.settingFrame.inputBrowser.filePathVar.get()
             outputPath = self.settingFrame.outputBrowser.filePathVar.get()
             variableName = self.settingFrame.variableName.text.get()
             self.controller.convert(inputPath, outputPath, variableName)
