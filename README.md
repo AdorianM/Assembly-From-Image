@@ -1,4 +1,4 @@
-# png2asm
+# Assembly From Image
 
 Transforms a PNG image into an assembly variable
 
