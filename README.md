@@ -10,6 +10,6 @@ Customization can be added if you run the application. A small interface with fe
 
 An input directory can be selected to convert all the images inside it. The directory input has priority over the file input in the case both are selected. Additionally, the directory should only contain image files.
 
-![image](https://user-images.githubusercontent.com/67052082/174342907-130734f9-5171-4efa-a25b-bdafb266e9a1.png)
+![image](https://user-images.githubusercontent.com/67052082/178140620-13b7cd6e-2106-4bfc-86bf-290ae5b14a74.png)
 
 ✨ More features on the way ✨
