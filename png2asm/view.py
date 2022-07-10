@@ -105,7 +105,7 @@ class View(tk.Frame):
 
     def initialize(self):
         self.parent.title("Asm Converter")
-        self.parent.geometry("320x360")
+        self.parent.geometry("330x360")
         self.parent.resizable(False, False)
         imagePath = resource_path("assets\\chef.ico")
         self.parent.iconbitmap(imagePath)
