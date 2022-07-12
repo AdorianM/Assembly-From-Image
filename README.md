@@ -1,6 +1,6 @@
 # Assembly From Image
 
-Transforms a PNG image into an assembly variable
+Transform an image into an assembly variable.
 
 Just drag & drop your PNG file to Serve.exe (or manually run the .py script with the png location as an argument) and you'll get a file containing the declaration of an assembly compatible variable.
 
