@@ -1,6 +1,6 @@
 ---
 name: Issue
-about: ''
+about: 'Submit a blank issue.'
 title: ''
 labels: ''
 assignees: ''
