@@ -37,9 +37,8 @@ make_text proc
 	pusha
 
 	lea esi, var1_0
-	jmp draw_text
 	
-draw_text:
+draw_image:
 	mov ecx, image_height
 loop_draw_lines:
 	mov edi, [ebp+arg1] ; pointer to pixel area
