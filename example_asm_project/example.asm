@@ -84,7 +84,7 @@ make_image_macro macro drawArea, x, y
 	push x
 	push drawArea
 	call make_text
-	add esp, 16
+	add esp, 12
 endm
 
 draw proc
