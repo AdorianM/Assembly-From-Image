@@ -27,11 +27,11 @@ image_height EQU 48
 include face.inc
 
 .code
-; Make text at the given coordinates
+; Make an image at the given coordinates
 ; arg1 - pointer to the pixel vector
 ; arg2 - x of drawing start position
 ; arg3 - y of drawing start position
-make_text proc
+make_image proc
 	push ebp
 	mov ebp, esp
 	pusha
@@ -76,14 +76,14 @@ loop_draw_columns:
 	mov esp, ebp
 	pop ebp
 	ret
-make_text endp
+make_image endp
 
 ; simple macro to call the procedure easier
 make_image_macro macro drawArea, x, y
 	push y
 	push x
 	push drawArea
-	call make_text
+	call make_image
 	add esp, 12
 endm
 
