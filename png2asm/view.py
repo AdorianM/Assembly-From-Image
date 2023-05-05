@@ -74,7 +74,7 @@ class FileBrowser(tk.Frame):
         self.filePath.pack(side=tk.TOP, fill="none", pady=default_pady)
 
     def browseFile(self):
-        self.file_types = ["*.jpeg*", "*.GIF*", "*.png*"]
+        self.file_types = ["*.jpeg*", "*.GIF*", "*.png*", "*.BMP*"]
         currentDir = path.dirname(path.realpath(__file__))
         file = filedialog.askopenfilename(
             initialdir=currentDir,
