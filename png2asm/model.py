@@ -7,6 +7,7 @@ class Model:
         self.inputPath = ""
         self.outputPath = "/"
         self.variableName = "var"
+        self.forceRGB = 0
     
     def setInputPath(self, inputPath):
         self.inputPath = inputPath
@@ -17,14 +18,17 @@ class Model:
     def setVariableName(self, variableName):
         self.variableName = variableName
 
+    def setForceRGB(self, forceRGB):
+        self.forceRGB = forceRGB
+
     def convert(self):
         try:
             if path.isdir(self.inputPath):
                 files = [path.join(self.inputPath, f) for f in listdir(self.inputPath) if path.isfile(path.join(self.inputPath, f))]
                 for file in files:
-                    utils.img2bytes(file, utils.path_to_basename(file), self.outputPath, self.variableName)
+                    utils.img2bytes(file, utils.path_to_basename(file), self.outputPath, self.variableName, self.forceRGB)
                 return True
-            utils.img2bytes(self.inputPath, utils.path_to_basename(self.inputPath), self.outputPath, self.variableName)
+            utils.img2bytes(self.inputPath, utils.path_to_basename(self.inputPath), self.outputPath, self.variableName, self.forceRGB)
 
             return True
         except Exception as e:

@@ -9,6 +9,10 @@ Just drag & drop your PNG file to Serve.exe (or manually run the .py script with
 
 Customization can be added if you run the application. A small interface with features like: selecting input/output location, selecting a variable name.
 
+Additionally, an 8-bit image will result in an [.inc file](https://github.com/AdorianM/Assembly-From-Image/blob/master/example_asm_project/win-8.inc) containing a byte array (values from 0 to 255), while any other image will result in a .inc file containing a dword array, with the values being the color values of the pixels. 
+
+If you want an 8-bit image to be converted to a dword array, make sure to check the 'forceRGB' checkbox, or to use the third argument for the script with any non-falsy value.
+
 An input directory can be selected to convert all the images inside it. The directory input has priority over the file input in the case both are selected. Additionally, the directory should only contain image files.
 
 ![image](https://user-images.githubusercontent.com/67052082/178140620-13b7cd6e-2106-4bfc-86bf-290ae5b14a74.png)
