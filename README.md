@@ -15,7 +15,7 @@ If you want an 8-bit image to be converted to a dword array, make sure to check 
 
 An input directory can be selected to convert all the images inside it. The directory input has priority over the file input in the case both are selected. Additionally, the directory should only contain image files.
 
-![image](https://user-images.githubusercontent.com/67052082/178140620-13b7cd6e-2106-4bfc-86bf-290ae5b14a74.png)
+![image](https://github.com/AdorianM/Assembly-From-Image/assets/67052082/40129768-1d3c-43db-8cf2-a887df335537)
 
 ## Example project
 
