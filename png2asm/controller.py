@@ -6,7 +6,7 @@ class Controller:
         self.model = model
         self.view = view
 
-    def convert(self, inputPath, outputPath, variableName):
+    def convert(self, inputPath, outputPath, variableName, forceRGB):
         if inputPath == "":
             self.view.showError("Please select an input file or directory.")
             return
@@ -19,6 +19,8 @@ class Controller:
         self.model.setOutputPath(outputPath)
         if variableName != "":
             self.model.setVariableName(variableName)
+        if forceRGB != None:
+            self.model.setForceRGB(forceRGB)
         
         conversionResult = self.model.convert()
         if conversionResult is True:

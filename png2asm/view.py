@@ -16,7 +16,6 @@ def resource_path(relative):
     base_path = getattr(sys, "_MEIPASS", path.dirname(path.abspath(__file__)))
     return path.join(base_path, relative)
 
-
 class ImageLabel(tk.Label):
     def __init__(self, parent, imgPath, *args, **kwargs):
         tk.Label.__init__(self, parent, *args, **kwargs)
@@ -38,6 +37,14 @@ class LabeledText(tk.Frame):
         # Component placement
         self.label.pack(side="left")
         self.text.pack(side="left", fill="x", expand=True, padx=default_padx)
+
+class CheckBox(tk.Frame):
+    def __init__(self, parent, label, variable, *args, **kwargs):
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+
+        self.checkbox = tk.Checkbutton(self, text=label, variable=variable)
+
+        self.checkbox.pack(side="left", fill="x", expand=True, padx=default_padx)
 
 
 class FileBrowser(tk.Frame):
@@ -119,6 +126,8 @@ class SettingsFrame(tk.Frame):
         )
 
         self.variableName = LabeledText(self.otherSettingsFrame, "Variable Name:")
+        self.forceRGB = tk.IntVar()
+        self.forceRGBCheckbox = CheckBox(self.otherSettingsFrame, "Force RGB", variable=self.forceRGB)
 
         # Component placement
         self.fileManagementFrame.pack(
@@ -148,6 +157,10 @@ class SettingsFrame(tk.Frame):
             side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady
         )
 
+        self.forceRGBCheckbox.pack(
+            side=tk.TOP, fill="x", expand=True, padx=default_padx, pady=default_pady
+        )
+
 
 class View(tk.Frame):
     def __init__(self, parent):
@@ -157,7 +170,7 @@ class View(tk.Frame):
 
     def initialize(self):
         self.parent.title("Asm Converter")
-        self.parent.geometry("330x360")
+        self.parent.geometry("330x400")
         self.parent.resizable(False, False)
         imagePath = resource_path("assets\\chef.ico")
         self.parent.iconbitmap(imagePath)
@@ -202,7 +215,8 @@ class View(tk.Frame):
             )
             outputPath = self.settingFrame.outputBrowser.filePathVar.get()
             variableName = self.settingFrame.variableName.text.get()
-            self.controller.convert(inputPath, outputPath, variableName)
+            forceRGB = self.settingFrame.forceRGB.get()
+            self.controller.convert(inputPath, outputPath, variableName, forceRGB)
 
     def showError(self, message):
         messagebox.showerror("Error", message)
