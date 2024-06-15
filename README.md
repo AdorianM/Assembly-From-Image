@@ -28,3 +28,8 @@ The generated output is an [.inc file](https://github.com/AdorianM/Assembly-From
 Because of the [limitation](https://github.com/AdorianM/Assembly-From-Image/issues/1) of the statement definition length, the generated `.inc` file will split the variable in multiple ones in case an image exceeds the horizontal length of 48px.
 
 ✨ More features on the way ✨
+
+## Hall of Projects
+
+This is a list of wonderful projects that used this library. If you want yours added, let me know!
+- [Simon Assembly Game Demo](https://www.youtube.com/watch?v=_WT5D2yH0io)
